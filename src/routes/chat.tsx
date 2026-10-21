@@ -72,7 +72,10 @@ function Sidebar({ userId, email, onNavigate }: { userId: string; email: string;
   async function remove(id: string) {
     if (!confirm("Supprimer cette conversation ? Cette action est définitive.")) return;
     const { error } = await supabase.from("conversations").delete().eq("id", id);
-    if (error) return toast.error("Suppression impossible.");
+    if (error) {
+      toast.error("Suppression impossible.");
+      return;
+    }
     qc.invalidateQueries({ queryKey: ["conversations", userId] });
     if (params.threadId === id) navigate({ to: "/chat" });
   }

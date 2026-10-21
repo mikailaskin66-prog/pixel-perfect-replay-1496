@@ -21,9 +21,9 @@ function textOf(message: UIMessage | undefined) {
 }
 
 export async function handleChat(request: Request): Promise<Response> {
-  const apiKey = process.env.LOVABLE_API_KEY;
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+  const apiKey = process.env["LOVABLE_API_KEY"];
+  const supabaseUrl = process.env["SUPABASE_URL"];
+  const publishableKey = process.env["SUPABASE_PUBLISHABLE_KEY"];
   if (!apiKey || !supabaseUrl || !publishableKey) {
     console.error("[chat] configuration manquante (clé IA ou base de données)");
     return jsonError(500, "Le service n'est pas configuré correctement. Réessaie plus tard.");
@@ -52,7 +52,7 @@ export async function handleChat(request: Request): Promise<Response> {
   if (!Array.isArray(messages) || messages.length === 0 || typeof conversationId !== "string") {
     return jsonError(400, "Requête invalide.");
   }
-  const last = messages[messages.length - 1];
+  const last = messages[messages.length - 1]!;
   const lastText = textOf(last);
   if (last.role !== "user" || !lastText) return jsonError(400, "Le message est vide.");
   if (lastText.length > 20000) return jsonError(400, "Le message est trop long (20 000 caractères max).");

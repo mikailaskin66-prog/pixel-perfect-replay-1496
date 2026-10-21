@@ -31,7 +31,10 @@ function ResetPassword() {
     setBusy(true);
     const { error } = await supabase.auth.updateUser({ password });
     setBusy(false);
-    if (error) return toast.error("Le lien a expiré ou est invalide. Redemande un e-mail.");
+    if (error) {
+      toast.error("Le lien a expiré ou est invalide. Redemande un e-mail.");
+      return;
+    }
     toast.success("Mot de passe mis à jour.");
     navigate({ to: "/chat" });
   }

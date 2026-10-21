@@ -42,7 +42,7 @@ export function Composer({
       </PromptInputBody>
       <PromptInputFooter className="justify-between">
         <span className="pl-2 text-xs text-muted-foreground">Entrée pour envoyer · 1 crédit</span>
-        <PromptInputSubmit status={status} onStop={onStop} disabled={disabled || (!busy && !text.trim())} />
+        <PromptInputSubmit status={status} {...(onStop ? { onStop } : {})} disabled={disabled || (!busy && !text.trim())} />
       </PromptInputFooter>
     </PromptInput>
   );
