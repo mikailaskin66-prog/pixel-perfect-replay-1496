@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Conversation, ConversationContent, ConversationScrollButton } from "@/components/ai-elements/conversation";
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
@@ -91,15 +91,16 @@ function ChatWindow({ threadId, initialMessages }: { threadId: string; initialMe
     setTimeout(refresh, 800);
   };
 
-  const sentPending = useRef(false);
+  // Send the message typed on the "new request" page once (timer survives StrictMode double effects).
   useEffect(() => {
-    if (sentPending.current) return;
-    const pending = sessionStorage.getItem(pendingKey(threadId));
-    if (pending) {
-      sentPending.current = true;
-      sessionStorage.removeItem(pendingKey(threadId));
-      send(pending);
-    }
+    const timer = setTimeout(() => {
+      const pending = sessionStorage.getItem(pendingKey(threadId));
+      if (pending) {
+        sessionStorage.removeItem(pendingKey(threadId));
+        send(pending);
+      }
+    }, 50);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId]);
 
